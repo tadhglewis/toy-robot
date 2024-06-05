@@ -12,6 +12,8 @@
     "test:watch": "skuba test --watch"
   },
   "dependencies": {
+    "@inquirer/prompts": "^5.0.5",
+    "chalk": "^5.3.0",
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
@@ -23,7 +25,7 @@
     "node": ">=20"
   },
   "skuba": {
-    "entryPoint": "src/app.ts",
+    "entryPoint": "src/cli.ts",
     "template": "greeter",
     "type": "application",
     "version": "8.0.1"
