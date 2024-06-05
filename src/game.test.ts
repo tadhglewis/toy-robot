@@ -1,11 +1,13 @@
-import { type Direction, Environment, Robot } from './game';
+import { type Direction, Environment, Game, Robot } from './game';
 
-let robot: Robot;
+let game: Game;
 let environment: Environment;
+let robot: Robot;
 
 beforeEach(() => {
-  robot = new Robot(0, 0, 'NORTH');
+  game = new Game();
   environment = new Environment();
+  robot = new Robot(0, 0, 'NORTH');
 });
 
 describe('Robot', () => {
@@ -50,7 +52,7 @@ describe('Environment', () => {
 
     it('should not allow out of bounds positions', () => {
       expect(
-        environment.isObstructed({ x: environment.mapUnitSize + 1, y: 0 }),
+        environment.isObstructed({ x: environment.mapSize.x + 1, y: 0 }),
       ).toBe(true);
     });
 
@@ -60,6 +62,71 @@ describe('Environment', () => {
 
     it('should allow in bound positions', () => {
       expect(environment.isObstructed({ x: 0, y: 0 })).toBe(false);
+    });
+  });
+});
+
+describe('Game', () => {
+  it('should throw an error when robot has not been placed', () =>
+    expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
+      `"The robot has not been placed"`,
+    ));
+
+  it('should ignore robot placement if out of bounds', () => {
+    game.place(-1, 0, 'NORTH');
+
+    expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
+      `"The robot has not been placed"`,
+    );
+  });
+
+  it('should place robot in a specified position', () => {
+    game.place(4, 4, 'SOUTH');
+
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 4, y: 4 },
+      direction: 'SOUTH',
+    });
+  });
+
+  it('should not fall off the map', () => {
+    game.place(0, 0, 'SOUTH');
+
+    game.move();
+
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 0, y: 0 },
+      direction: 'SOUTH',
+    });
+  });
+
+  it('should move forward', () => {
+    game.place(0, 0, 'NORTH');
+    game.move();
+
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 0, y: 1 },
+      direction: 'NORTH',
+    });
+  });
+
+  it('should be facing EAST when turning left from NORTH', () => {
+    game.place(0, 0, 'NORTH');
+    game.turnRight();
+
+    expect(game.report().robot.direction).toBe('EAST');
+  });
+
+  it('should move around', () => {
+    game.place(1, 2, 'EAST');
+    game.move();
+    game.move();
+    game.turnLeft();
+    game.move();
+
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 3, y: 3 },
+      direction: 'NORTH',
     });
   });
 });

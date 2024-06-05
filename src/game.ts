@@ -3,7 +3,7 @@ export class Environment {
   objects: Set<string>;
 
   constructor() {
-    this.mapSize = { x: 20, y: 5 };
+    this.mapSize = { x: 5, y: 5 };
     this.objects = new Set(['1:0']);
   }
 

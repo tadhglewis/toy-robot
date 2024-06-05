@@ -13,7 +13,7 @@ The architecture has been broken down into 2 layers:
 
 The goal is to separate concerns which allows you to essentially swap out the input and UI without modifying the core game.
 
-**Note:** the game layer essentially solves the challenge while other layers may add niceties.
+**Note:** the game layer solves the challenge while other layers may add niceties for fun.
 
 Assumptions
 
