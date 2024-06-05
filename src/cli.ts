@@ -8,34 +8,8 @@ type Action = 'PLACE' | 'TURN_LEFT' | 'TURN_RIGHT' | 'REPORT';
 
 const game = new Game();
 
-const main = async () => {
-  const action = await select<Action>({
-    message: 'Robot commands',
-    choices: [
-      {
-        name: 'Place',
-        value: 'PLACE',
-        description: 'Place the robot in the environment',
-      },
-      {
-        name: 'Turn left',
-        value: 'TURN_LEFT',
-        description: 'Turn the robot left',
-      },
-      {
-        name: 'Turn right',
-        value: 'TURN_RIGHT',
-        description: 'Turn the robot right',
-      },
-      {
-        name: 'Report',
-        value: 'REPORT',
-        description: 'Report the current state of the robot',
-      },
-    ],
-  });
-
-  if (action === 'PLACE') {
+const actionResolver: Record<Action, () => void | Promise<void>> = {
+  PLACE: async () => {
     const x = await input({
       message: 'X position',
       validate: (value) => typeof Number(value) === 'number',
@@ -69,17 +43,8 @@ const main = async () => {
     });
 
     game.place(Number(x), Number(y), direction);
-  }
-
-  if (action === 'TURN_LEFT') {
-    game.turnLeft();
-  }
-
-  if (action === 'TURN_RIGHT') {
-    game.turnRight();
-  }
-
-  if (action === 'REPORT') {
+  },
+  REPORT: () => {
     const { x, y, direction } = game.report();
 
     const visualDirectionMap: Record<Direction, string> = {
@@ -95,7 +60,39 @@ const main = async () => {
       direction: visualDirectionMap[direction],
       facing: direction,
     });
-  }
+  },
+  TURN_LEFT: () => game.turnLeft(),
+  TURN_RIGHT: () => game.turnRight(),
+};
+
+const main = async () => {
+  const action = await select<Action>({
+    message: 'Robot commands',
+    choices: [
+      {
+        name: 'Place',
+        value: 'PLACE',
+        description: 'Place the robot in the environment',
+      },
+      {
+        name: 'Turn left',
+        value: 'TURN_LEFT',
+        description: 'Turn the robot left',
+      },
+      {
+        name: 'Turn right',
+        value: 'TURN_RIGHT',
+        description: 'Turn the robot right',
+      },
+      {
+        name: 'Report',
+        value: 'REPORT',
+        description: 'Report the current state of the robot',
+      },
+    ],
+  });
+
+  await actionResolver[action]();
 
   await main();
 };
