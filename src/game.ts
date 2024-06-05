@@ -1,16 +1,20 @@
 export class Environment {
-  mapUnitSize: number;
+  mapSize: Cords;
+  objects: Set<string>;
 
   constructor() {
-    this.mapUnitSize = 5;
+    this.mapSize = { x: 20, y: 5 };
+    this.objects = new Set(['1:0']);
   }
 
   private isWithinMap(x: number, y: number) {
-    return x <= this.mapUnitSize && x >= 0 && y <= this.mapUnitSize && y >= 0;
+    return x < this.mapSize.x && x >= 0 && y < this.mapSize.y && y >= 0;
   }
 
   isObstructed({ x, y }: Cords) {
-    return !this.isWithinMap(x, y);
+    const hasObject = this.objects.has(`${x}:${y}`);
+
+    return !this.isWithinMap(x, y) || hasObject;
   }
 }
 
@@ -18,6 +22,8 @@ const directions = ['NORTH', 'EAST', 'SOUTH', 'WEST'] as const;
 export type Direction = (typeof directions)[number];
 
 type Cords = { x: number; y: number };
+
+// Move into movements class
 
 export class Robot {
   private cords: Cords;
@@ -69,38 +75,40 @@ export class Game {
 
   place(x: number, y: number, direction: Direction) {
     if (this.environment.isObstructed({ x, y })) {
-      throw new Error('Robot cannot be placed here');
+      return;
     }
 
     this.robot = new Robot(x, y, direction);
   }
 
   report() {
-    // We should just enforce robot placement
-    if (!this.robot) throw new Error('Robot has not been placed');
+    return {
+      robot: this.getRobot().report(),
+      environment: {
+        objects: this.environment.objects,
+        mapSize: this.environment.mapSize,
+      },
+    };
+  }
 
-    return this.robot.report();
+  private getRobot() {
+    if (!this.robot) {
+      throw new Error('The robot has not been placed');
+    }
+
+    return this.robot;
   }
 
   turnLeft() {
-    // We should just enforce robot placement
-    if (!this.robot) throw new Error('Robot has not been placed');
-
-    this.robot.turnLeft();
+    this.getRobot().turnLeft();
   }
 
   turnRight() {
-    // We should just enforce robot placement
-    if (!this.robot) throw new Error('Robot has not been placed');
-
-    this.robot.turnRight();
+    this.getRobot().turnRight();
   }
 
   move() {
-    // We should just enforce robot placement
-    if (!this.robot) throw new Error('Robot has not been placed');
-
-    const { cords, direction } = this.robot.report();
+    const { cords, direction } = this.getRobot().report();
 
     const compassCordsMap: Record<Direction, { x: number; y: number }> = {
       NORTH: {
@@ -130,10 +138,6 @@ export class Game {
       return;
     }
 
-    this.robot.move(newPosition);
-  }
-
-  getMapSize() {
-    return this.environment.mapUnitSize;
+    this.getRobot().move(newPosition);
   }
 }

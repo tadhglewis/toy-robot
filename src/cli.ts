@@ -4,106 +4,121 @@ import { input, select } from '@inquirer/prompts';
 
 import { type Direction, Game } from './game';
 
-type Action = 'PLACE' | 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE' | 'REPORT';
+type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
 const game = new Game();
 
+const print = () => {
+  const { robot, environment } = game.report();
+
+  const result = [];
+
+  for (let y = 0; y < environment.mapSize.y; y++) {
+    let row = '';
+
+    for (let x = 0; x < environment.mapSize.x; x++) {
+      if (robot.cords.x === x && robot.cords.y === y) {
+        row += '[🤖]';
+        continue;
+      }
+
+      if (environment.objects.has(`${x}:${y}`)) {
+        row += '[🗿]';
+        continue;
+      }
+
+      row += '[󠀠⋄⋄]';
+    }
+
+    result.push(row);
+  }
+
+  const visualDirectionMap: Record<Direction, string> = {
+    NORTH: '⬆️',
+    EAST: '➡️',
+    SOUTH: '⬇️',
+    WEST: '⬅️',
+  };
+
+  console.log(
+    result.reverse().join('\n'),
+    '\n\n',
+    `Direction: ${visualDirectionMap[robot.direction]}`,
+  );
+};
+
+const startGameMenu = async () => {
+  const x = await input({
+    message: 'X position',
+    validate: (value) => typeof Number(value) === 'number',
+  });
+
+  const y = await input({
+    message: 'Y position',
+    validate: (value) => typeof Number(value) === 'number',
+  });
+
+  const direction = await select<Direction>({
+    message: 'Direction',
+    choices: [
+      {
+        name: 'North',
+        value: 'NORTH',
+      },
+      {
+        name: 'East',
+        value: 'EAST',
+      },
+      {
+        name: 'South',
+        value: 'SOUTH',
+      },
+      {
+        name: 'West',
+        value: 'WEST',
+      },
+    ],
+  });
+
+  game.place(Number(x), Number(y), direction);
+};
+
 const actionResolver: Record<Action, () => void | Promise<void>> = {
-  PLACE: async () => {
-    const x = await input({
-      message: 'X position',
-      validate: (value) => typeof Number(value) === 'number',
-    });
-
-    const y = await input({
-      message: 'Y position',
-      validate: (value) => typeof Number(value) === 'number',
-    });
-
-    const direction = await select<Direction>({
-      message: 'Direction',
-      choices: [
-        {
-          name: 'North',
-          value: 'NORTH',
-        },
-        {
-          name: 'East',
-          value: 'EAST',
-        },
-        {
-          name: 'South',
-          value: 'SOUTH',
-        },
-        {
-          name: 'West',
-          value: 'WEST',
-        },
-      ],
-    });
-
-    game.place(Number(x), Number(y), direction);
-  },
-  REPORT: () => {
-    const {
-      cords: { x, y },
-      direction,
-    } = game.report();
-
-    const visualDirectionMap: Record<Direction, string> = {
-      NORTH: '⬆️',
-      EAST: '➡️',
-      SOUTH: '⬇️',
-      WEST: '⬅️',
-    };
-
-    console.table({
-      x,
-      y,
-      direction: visualDirectionMap[direction],
-      facing: direction,
-    });
-  },
   TURN_LEFT: () => game.turnLeft(),
   TURN_RIGHT: () => game.turnRight(),
   MOVE: () => game.move(),
 };
 
 const main = async () => {
-  const action = await select<Action>({
-    message: 'Robot commands',
-    choices: [
-      {
-        name: 'Place',
-        value: 'PLACE',
-        description: 'Place the robot in the environment',
-      },
-      {
-        name: 'Turn left',
-        value: 'TURN_LEFT',
-        description: 'Turn the robot left',
-      },
-      {
-        name: 'Turn right',
-        value: 'TURN_RIGHT',
-        description: 'Turn the robot right',
-      },
-      {
-        name: 'Move',
-        value: 'MOVE',
-        description: 'Move the robot forward',
-      },
-      {
-        name: 'Report',
-        value: 'REPORT',
-        description: 'Report the current state of the robot',
-      },
-    ],
-  });
+  await startGameMenu();
 
-  await actionResolver[action]();
+  while (true) {
+    console.clear();
+    print();
 
-  await main();
+    const action = await select<Action>({
+      message: 'Robot commands',
+      choices: [
+        {
+          name: 'Move',
+          value: 'MOVE',
+          description: 'Move the robot forward',
+        },
+        {
+          name: 'Turn left',
+          value: 'TURN_LEFT',
+          description: 'Turn the robot left',
+        },
+        {
+          name: 'Turn right',
+          value: 'TURN_RIGHT',
+          description: 'Turn the robot right',
+        },
+      ],
+    });
+
+    await actionResolver[action]();
+  }
 };
 
 main().catch((e) => console.log(e));

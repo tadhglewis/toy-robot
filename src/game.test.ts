@@ -54,6 +54,10 @@ describe('Environment', () => {
       ).toBe(true);
     });
 
+    it('should be obstructed if there is an object', () => {
+      expect(environment.isObstructed({ x: 1, y: 0 })).toBe(true);
+    });
+
     it('should allow in bound positions', () => {
       expect(environment.isObstructed({ x: 0, y: 0 })).toBe(false);
     });
