@@ -2,34 +2,22 @@
 
 [![Powered by skuba](https://img.shields.io/badge/🤿%20skuba-powered-009DC4)](https://github.com/seek-oss/skuba)
 
-Next steps:
+## Challenge
 
-1. [ ] Finish templating if this was skipped earlier:
+[See coding challenge](./coding-challenge.md) for details
 
-   ```shell
-   pnpm exec skuba configure
-   ```
+The architecture has been broken down into 2 layers:
 
-2. [ ] Create a new repository in the appropriate GitHub organisation.
-3. [ ] Add the repository to BuildAgency;
-       see [Builds at SEEK] for more information.
-4. [ ] Push local commits to the upstream GitHub branch.
-5. [ ] Configure [GitHub repository settings].
-6. [ ] Delete this checklist 😌.
+1. The game. This handles all the core game logic
+2. The CLI. This resolves user inputs into game interactions and visualises the game state
 
-[builds at seek]: https://backstage.myseek.xyz/docs/default/component/builds-cicd-seek/
-[github repository settings]: https://github.com/na/toy-robot/settings
+The goal is to separate concerns which allows you to essentially swap out the input and UI without modifying the core game.
 
-## Design
+**Note:** the game layer essentially solves the challenge while other layers may add niceties.
 
-The `greeter` template is the prototypical _hello world_ project.
-It can function as a playground for the TypeScript tooling prescribed by our [Technical Guidelines],
-or serve as a starting point for a backend project if the other built-in templates are not a good fit.
+Assumptions
 
-It's a barebones Node.js application that comprises:
-
-- A [src/app.ts](src/app.ts) that can be run locally to greet the user
-- A [src/app.test.ts](src/app.test.ts) that demonstrates rudimentary Jest usage
+- We use skuba which gracefully handles linting, testing, and all the _other concerns_ and DX not directly related to the challenge. This is fine for SEEK as it is SEEK-opinionated however you probably should use some other framework or custom setup.
 
 ## Development
 
@@ -60,37 +48,3 @@ pnpm start:debug
 ```
 
 This runs a live-reloading Node.js process pointing to the [src/app.ts](src/app.ts) entrypoint.
-
-## Deploy
-
-The `greeter` template includes a simple [Buildkite pipeline](.buildkite/pipeline.yml) for testing and linting.
-It does not assume a deployment method or environment.
-
-For inspiration in this space, check out:
-
-- The `koa-rest-api` template for containerised deployments
-- The `lambda-sqs-worker` template for Lambda deployments
-
-## Support
-
-### Dev
-
-TODO: add support links for the dev environment.
-
-<!--
-- CloudWatch dashboard
-- Datadog dashboard
-- Splunk logs
--->
-
-### Prod
-
-TODO: add support links for the prod environment.
-
-<!--
-- CloudWatch dashboard
-- Datadog dashboard
-- Splunk logs
--->
-
-[Technical Guidelines]: https://myseek.atlassian.net/wiki/spaces/AA/pages/2358346017/
