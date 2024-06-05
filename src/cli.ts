@@ -4,7 +4,7 @@ import { input, select } from '@inquirer/prompts';
 
 import { type Direction, Game } from './game';
 
-type Action = 'PLACE' | 'TURN_LEFT' | 'TURN_RIGHT' | 'REPORT';
+type Action = 'PLACE' | 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE' | 'REPORT';
 
 const game = new Game();
 
@@ -45,7 +45,10 @@ const actionResolver: Record<Action, () => void | Promise<void>> = {
     game.place(Number(x), Number(y), direction);
   },
   REPORT: () => {
-    const { x, y, direction } = game.report();
+    const {
+      cords: { x, y },
+      direction,
+    } = game.report();
 
     const visualDirectionMap: Record<Direction, string> = {
       NORTH: '⬆️',
@@ -63,6 +66,7 @@ const actionResolver: Record<Action, () => void | Promise<void>> = {
   },
   TURN_LEFT: () => game.turnLeft(),
   TURN_RIGHT: () => game.turnRight(),
+  MOVE: () => game.move(),
 };
 
 const main = async () => {
@@ -83,6 +87,11 @@ const main = async () => {
         name: 'Turn right',
         value: 'TURN_RIGHT',
         description: 'Turn the robot right',
+      },
+      {
+        name: 'Move',
+        value: 'MOVE',
+        description: 'Move the robot forward',
       },
       {
         name: 'Report',
