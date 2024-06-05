@@ -6,7 +6,7 @@ let robot: Robot;
 
 beforeEach(() => {
   game = new Game();
-  environment = new Environment();
+  environment = new Environment({ x: 0, y: 0 });
   robot = new Robot(0, 0, 'NORTH');
 });
 
@@ -83,6 +83,20 @@ describe('Game', () => {
   it('should place robot in a specified position', () => {
     game.place(4, 4, 'SOUTH');
 
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 4, y: 4 },
+      direction: 'SOUTH',
+    });
+  });
+
+  it('should be re-placed if the robot has already been placed', () => {
+    game.place(0, 0, 'NORTH');
+    expect(game.report().robot).toStrictEqual({
+      cords: { x: 0, y: 0 },
+      direction: 'NORTH',
+    });
+
+    game.place(4, 4, 'SOUTH');
     expect(game.report().robot).toStrictEqual({
       cords: { x: 4, y: 4 },
       direction: 'SOUTH',

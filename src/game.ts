@@ -2,8 +2,8 @@ export class Environment {
   mapSize: Cords;
   objects: Set<string>;
 
-  constructor() {
-    this.mapSize = { x: 5, y: 5 };
+  constructor(cords: Cords) {
+    this.mapSize = cords;
     this.objects = new Set(['1:0']);
   }
 
@@ -23,7 +23,8 @@ export type Direction = (typeof directions)[number];
 
 type Cords = { x: number; y: number };
 
-// Move into movements class
+// 1. Move into movements class
+// 2. Add a robot implentation and implement it
 
 export class Robot {
   private cords: Cords;
@@ -69,7 +70,7 @@ export class Game {
   private robot: Robot | null;
 
   constructor() {
-    this.environment = new Environment();
+    this.environment = new Environment({ x: 5, y: 5 });
     this.robot = null;
   }
 
