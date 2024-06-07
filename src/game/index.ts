@@ -6,4 +6,6 @@ export const config = {
   tableSize: { x: 5, y: 5 },
 };
 
-export const game = new Game(new Environment(config.tableSize));
+export const environment = new Environment(config.tableSize);
+
+export const game = new Game(environment);

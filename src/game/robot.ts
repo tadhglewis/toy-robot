@@ -1,16 +1,52 @@
-import { type Cords, type Direction, type Player, directions } from './game';
+import {
+  type Cords,
+  type Direction,
+  type Environment,
+  type Player,
+  directions,
+} from './game';
 
 export class Robot implements Player {
   private cords: Cords;
   private direction: Direction;
+  private environment: Environment;
 
-  constructor(cords: Cords, direction: Direction) {
+  constructor(cords: Cords, direction: Direction, environment: Environment) {
     this.cords = cords;
     this.direction = direction;
+    this.environment = environment;
   }
 
-  move(cords: Cords) {
-    this.cords = cords;
+  move() {
+    const compassCordsMap: Record<Direction, { x: number; y: number }> = {
+      NORTH: {
+        x: 0,
+        y: 1,
+      },
+      EAST: {
+        x: 1,
+        y: 0,
+      },
+      SOUTH: {
+        x: 0,
+        y: -1,
+      },
+      WEST: {
+        x: -1,
+        y: 0,
+      },
+    };
+
+    const newPosition = {
+      x: this.cords.x + compassCordsMap[this.direction].x,
+      y: this.cords.y + compassCordsMap[this.direction].y,
+    };
+
+    if (this.environment.isObstructed(newPosition)) {
+      return;
+    }
+
+    this.cords = newPosition;
   }
 
   private turn(turn: number) {

@@ -3,23 +3,23 @@
 import { select } from '@inquirer/prompts';
 import { range } from 'lodash';
 
-import { Player, config, game } from './game';
+import { Player, config, environment, game } from './game';
 import type { Direction } from './game/game';
 import { inputNumber } from './inquirer';
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
 const print = () => {
-  const { player, environment } = game.report();
+  const { player, environment: gameEnvironment } = game.report();
 
-  const emptyRow = '[󠀠⋄⋄]'.repeat(environment.mapSize.x);
+  const emptyRow = '[󠀠⋄⋄]'.repeat(gameEnvironment.mapSize.x);
 
-  const result = range(0, environment.mapSize.y).map((y) => {
+  const result = range(0, gameEnvironment.mapSize.y).map((y) => {
     // Return an empty row if nothing is on the y(row)
     if (player.cords.y !== y) {
       return emptyRow;
     }
 
-    const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
+    const row = new Array(gameEnvironment.mapSize.x).fill('[󠀠⋄⋄]');
 
     row[player.cords.x] = '[🤖]';
 
@@ -80,7 +80,7 @@ const startGameMenu = async () => {
     }),
   };
 
-  game.place(new Player(cords, direction));
+  game.place(new Player(cords, direction, environment));
 };
 
 const actionResolver: Record<Action, () => void | Promise<void>> = {

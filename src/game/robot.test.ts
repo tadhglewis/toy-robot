@@ -1,10 +1,12 @@
 import type { Direction } from './game';
 import { Robot } from './robot';
+import { Tabletop } from './tabletop';
 
 let robot: Robot;
+const tabletop = new Tabletop({ x: 5, y: 5 });
 
 beforeEach(() => {
-  robot = new Robot({ x: 0, y: 0 }, 'NORTH');
+  robot = new Robot({ x: 0, y: 0 }, 'NORTH', tabletop);
 });
 
 describe('Robot', () => {

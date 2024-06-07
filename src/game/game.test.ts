@@ -3,9 +3,10 @@ import { Robot } from './robot';
 import { Tabletop } from './tabletop';
 
 let game: Game;
+const tabletop = new Tabletop({ x: 5, y: 5 });
 
 beforeEach(() => {
-  game = new Game(new Tabletop({ x: 5, y: 5 }));
+  game = new Game(tabletop);
 });
 
 describe('Game', () => {
@@ -15,7 +16,7 @@ describe('Game', () => {
     ));
 
   it('should ignore robot placement if out of bounds', () => {
-    game.place(new Robot({ x: -1, y: 0 }, 'NORTH'));
+    game.place(new Robot({ x: -1, y: 0 }, 'NORTH', tabletop));
 
     expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
       `"The robot has not been placed"`,
@@ -23,7 +24,7 @@ describe('Game', () => {
   });
 
   it('should place robot in a specified position', () => {
-    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH'));
+    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH', tabletop));
 
     expect(game.report().player).toStrictEqual({
       cords: { x: 4, y: 4 },
@@ -32,13 +33,13 @@ describe('Game', () => {
   });
 
   it('should be re-placed if the robot has already been placed', () => {
-    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH', tabletop));
     expect(game.report().player).toStrictEqual({
       cords: { x: 0, y: 0 },
       direction: 'NORTH',
     });
 
-    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH'));
+    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH', tabletop));
     expect(game.report().player).toStrictEqual({
       cords: { x: 4, y: 4 },
       direction: 'SOUTH',
@@ -46,7 +47,7 @@ describe('Game', () => {
   });
 
   it('should not fall off the map', () => {
-    game.place(new Robot({ x: 0, y: 0 }, 'SOUTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'SOUTH', tabletop));
 
     game.move();
 
@@ -57,7 +58,7 @@ describe('Game', () => {
   });
 
   it('should move forward', () => {
-    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH', tabletop));
     game.move();
 
     expect(game.report().player).toStrictEqual({
@@ -67,14 +68,14 @@ describe('Game', () => {
   });
 
   it('should be facing EAST when turning left from NORTH', () => {
-    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH', tabletop));
     game.turnRight();
 
     expect(game.report().player.direction).toBe('EAST');
   });
 
   it('should move around', () => {
-    game.place(new Robot({ x: 1, y: 2 }, 'EAST'));
+    game.place(new Robot({ x: 1, y: 2 }, 'EAST', tabletop));
     game.move();
     game.move();
     game.turnLeft();
