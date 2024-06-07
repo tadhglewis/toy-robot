@@ -3,13 +3,15 @@
 import { input, select } from '@inquirer/prompts';
 
 import { type Direction, Game } from './game';
+import { Robot } from './robot';
+import { Tabletop } from './tabletop';
 
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
-const game = new Game();
+const game = new Game(new Tabletop({ x: 5, y: 5 }));
 
 const print = () => {
-  const { robot, environment } = game.report();
+  const { player, environment } = game.report();
 
   const result = [];
 
@@ -17,7 +19,7 @@ const print = () => {
     let row = '';
 
     for (let x = 0; x < environment.mapSize.x; x++) {
-      if (robot.cords.x === x && robot.cords.y === y) {
+      if (player.cords.x === x && player.cords.y === y) {
         row += '[🤖]';
         continue;
       }
@@ -43,7 +45,7 @@ const print = () => {
   console.log(
     result.reverse().join('\n'),
     '\n\n',
-    `Direction: ${visualDirectionMap[robot.direction]}`,
+    `Direction: ${visualDirectionMap[player.direction]}`,
   );
 };
 
@@ -80,7 +82,7 @@ const startGameMenu = async () => {
     ],
   });
 
-  game.place(Number(x), Number(y), direction);
+  game.place(new Robot(Number(x), Number(y), direction));
 };
 
 const actionResolver: Record<Action, () => void | Promise<void>> = {
