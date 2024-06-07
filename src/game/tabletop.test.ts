@@ -3,7 +3,7 @@ import { Tabletop } from './tabletop';
 let tabletop: Tabletop;
 
 beforeEach(() => {
-  tabletop = new Tabletop({ x: 0, y: 0 });
+  tabletop = new Tabletop({ x: 5, y: 5 });
 });
 
 describe('Tabletop', () => {
@@ -18,10 +18,6 @@ describe('Tabletop', () => {
       expect(tabletop.isObstructed({ x: tabletop.mapSize.x + 1, y: 0 })).toBe(
         true,
       );
-    });
-
-    it('should be obstructed if there is an object', () => {
-      expect(tabletop.isObstructed({ x: 1, y: 0 })).toBe(true);
     });
 
     it('should allow in bound positions', () => {

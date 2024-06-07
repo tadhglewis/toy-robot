@@ -34,43 +34,44 @@ const inputNumber = async (...args: Parameters<typeof input>) =>
     10,
   );
 
-const print = () => {
+// const print = () => {
+//   const { player, environment } = game.report();
+
+//   const result = [];
+
+//   for (let y = 0; y < environment.mapSize.y; y++) {
+//     let row = '';
+
+//     for (let x = 0; x < environment.mapSize.x; x++) {
+//       if (player.cords.x === x && player.cords.y === y) {
+//         row += '[🤖]';
+//         continue;
+//       }
+
+//       row += '[󠀠⋄⋄]';
+//     }
+
+//     result.push(row);
+//   }
+
+//   const visualDirectionMap: Record<Direction, string> = {
+//     NORTH: '⬆️',
+//     EAST: '➡️',
+//     SOUTH: '⬇️',
+//     WEST: '⬅️',
+//   };
+
+//   console.log(
+//     result.reverse().join('\n'),
+//     '\n\n',
+//     `Direction: ${visualDirectionMap[player.direction]}`,
+//   );
+// };
+
+const fastPrint = () => {
   const { player, environment } = game.report();
 
-  const result = [];
-
-  for (let y = 0; y < environment.mapSize.y; y++) {
-    let row = '';
-
-    for (let x = 0; x < environment.mapSize.x; x++) {
-      if (player.cords.x === x && player.cords.y === y) {
-        row += '[🤖]';
-        continue;
-      }
-
-      if (environment.objects.has(`${x}:${y}`)) {
-        row += '[🗿]';
-        continue;
-      }
-
-      row += '[󠀠⋄⋄]';
-    }
-
-    result.push(row);
-  }
-
-  const visualDirectionMap: Record<Direction, string> = {
-    NORTH: '⬆️',
-    EAST: '➡️',
-    SOUTH: '⬇️',
-    WEST: '⬅️',
-  };
-
-  console.log(
-    result.reverse().join('\n'),
-    '\n\n',
-    `Direction: ${visualDirectionMap[player.direction]}`,
-  );
+  console.table({ player, environment });
 };
 
 const startGameMenu = async () => {
@@ -127,7 +128,7 @@ const main = async () => {
 
   while (true) {
     console.clear();
-    print();
+    fastPrint();
 
     const action = await select<Action>({
       message: 'Robot commands',

@@ -9,20 +9,20 @@ beforeEach(() => {
 });
 
 describe('Game', () => {
-  it('should throw an error when player has not been placed', () =>
+  it('should throw an error when robot has not been placed', () =>
     expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
-      `"The player has not been placed"`,
+      `"The robot has not been placed"`,
     ));
 
-  it('should ignore player placement if out of bounds', () => {
+  it('should ignore robot placement if out of bounds', () => {
     game.place(new Robot({ x: -1, y: 0 }, 'NORTH'));
 
     expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
-      `"The player has not been placed"`,
+      `"The robot has not been placed"`,
     );
   });
 
-  it('should place player in a specified position', () => {
+  it('should place robot in a specified position', () => {
     game.place(new Robot({ x: 4, y: 4 }, 'SOUTH'));
 
     expect(game.report().player).toStrictEqual({
@@ -31,7 +31,7 @@ describe('Game', () => {
     });
   });
 
-  it('should be re-placed if the player has already been placed', () => {
+  it('should be re-placed if the robot has already been placed', () => {
     game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
     expect(game.report().player).toStrictEqual({
       cords: { x: 0, y: 0 },

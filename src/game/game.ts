@@ -8,7 +8,6 @@ export type Cords = { x: number; y: number };
 export interface Environment {
   isObstructed: (cords: Cords) => boolean;
   mapSize: Cords;
-  objects: Set<string>;
 }
 
 export interface Player {
@@ -39,7 +38,6 @@ export class Game {
     return {
       player: this.getPlayer().report(),
       environment: {
-        objects: this.environment.objects,
         mapSize: this.environment.mapSize,
       },
     };

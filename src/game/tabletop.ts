@@ -2,11 +2,9 @@ import type { Cords, Environment } from './game';
 
 export class Tabletop implements Environment {
   mapSize: Cords;
-  objects: Set<string>;
 
   constructor(cords: Cords) {
     this.mapSize = cords;
-    this.objects = new Set(['1:0']);
   }
 
   private isWithinMap(x: number, y: number) {
@@ -14,8 +12,6 @@ export class Tabletop implements Environment {
   }
 
   isObstructed({ x, y }: Cords) {
-    const hasObject = this.objects.has(`${x}:${y}`);
-
-    return !this.isWithinMap(x, y) || hasObject;
+    return !this.isWithinMap(x, y);
   }
 }
