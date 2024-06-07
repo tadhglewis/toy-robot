@@ -1,77 +1,45 @@
 /* eslint-disable no-console */
 
-import { input, select } from '@inquirer/prompts';
+import { select } from '@inquirer/prompts';
+import { times } from 'lodash';
 
-import { Game, Robot, Tabletop } from './game';
+import { Player, config, game } from './game';
 import type { Direction } from './game/game';
-
+import { inputNumber } from './inquirer';
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
-const config = {
-  tableSize: { x: 5, y: 5 },
-};
-
-const game = new Game(new Tabletop(config.tableSize));
-
-// Inquirer removed number inputs during their migration to reduce package size.
-// https://github.com/SBoudrias/Inquirer.js/issues/1383#issuecomment-2041575124
-const inputNumber = async (...args: Parameters<typeof input>) =>
-  parseInt(
-    await input({
-      ...args[0],
-      validate: (value) => {
-        if (Number.isNaN(value)) {
-          return 'You must provide a valid number';
-        }
-
-        if (args[0].validate) {
-          return args[0].validate(value);
-        }
-
-        return true;
-      },
-    }),
-    10,
-  );
-
-// const print = () => {
-//   const { player, environment } = game.report();
-
-//   const result = [];
-
-//   for (let y = 0; y < environment.mapSize.y; y++) {
-//     let row = '';
-
-//     for (let x = 0; x < environment.mapSize.x; x++) {
-//       if (player.cords.x === x && player.cords.y === y) {
-//         row += '[🤖]';
-//         continue;
-//       }
-
-//       row += '[󠀠⋄⋄]';
-//     }
-
-//     result.push(row);
-//   }
-
-//   const visualDirectionMap: Record<Direction, string> = {
-//     NORTH: '⬆️',
-//     EAST: '➡️',
-//     SOUTH: '⬇️',
-//     WEST: '⬅️',
-//   };
-
-//   console.log(
-//     result.reverse().join('\n'),
-//     '\n\n',
-//     `Direction: ${visualDirectionMap[player.direction]}`,
-//   );
-// };
-
-const fastPrint = () => {
+const print = () => {
   const { player, environment } = game.report();
 
-  console.table({ player, environment });
+  const emptyRow = '[󠀠⋄⋄]'.repeat(environment.mapSize.x);
+
+  const result: string[] = [];
+
+  times(environment.mapSize.y, (y) => {
+    // If the layer is on this row(y), fill each space manually
+    if (player.cords.y === y) {
+      const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
+      row[player.cords.x] = '[🤖]';
+
+      result.push(row.join(''));
+      return;
+    }
+
+    result.push(emptyRow);
+  });
+
+  const visualDirectionMap: Record<Direction, string> = {
+    NORTH: '⬆️',
+    EAST: '➡️',
+    SOUTH: '⬇️',
+    WEST: '⬅️',
+  };
+
+  console.log(
+    result.reverse().join('\n'),
+    '\n\n',
+    `Direction: ${visualDirectionMap[player.direction]}`,
+  );
 };
 
 const startGameMenu = async () => {
@@ -114,7 +82,7 @@ const startGameMenu = async () => {
     }),
   };
 
-  game.place(new Robot(cords, direction));
+  game.place(new Player(cords, direction));
 };
 
 const actionResolver: Record<Action, () => void | Promise<void>> = {
@@ -128,7 +96,7 @@ const main = async () => {
 
   while (true) {
     console.clear();
-    fastPrint();
+    print();
 
     const action = await select<Action>({
       message: 'Robot commands',
