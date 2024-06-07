@@ -1,31 +1,42 @@
 /* eslint-disable no-console */
 
 import { select } from '@inquirer/prompts';
-import { times } from 'lodash';
+import { range } from 'lodash';
 
 import { Player, config, game } from './game';
 import type { Direction } from './game/game';
 import { inputNumber } from './inquirer';
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
+const obstacles = new Map([[0, new Set([1])]]);
+
 const print = () => {
   const { player, environment } = game.report();
 
   const emptyRow = '[󠀠⋄⋄]'.repeat(environment.mapSize.x);
 
-  const result: string[] = [];
+  const result = range(0, environment.mapSize.y).map((y) => {
+    const rowObstacles = obstacles.get(y);
+    const isPlayerRow = player.cords.y === y;
 
-  times(environment.mapSize.y, (y) => {
-    // If the player is on this row(y), fill each space manually
-    if (player.cords.y === y) {
-      const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
-      row[player.cords.x] = '[🤖]';
-
-      result.push(row.join(''));
-      return;
+    // Return an empty row if nothing is on the y(row)
+    if (!isPlayerRow && !rowObstacles) {
+      return emptyRow;
     }
 
-    result.push(emptyRow);
+    const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
+
+    if (isPlayerRow) {
+      row[player.cords.x] = '[🤖]';
+    }
+
+    if (rowObstacles) {
+      for (const rowObstacle of rowObstacles) {
+        row[rowObstacle] = '[🚧]';
+      }
+    }
+
+    return row.join('');
   });
 
   const visualDirectionMap: Record<Direction, string> = {
