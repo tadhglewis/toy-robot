@@ -4,8 +4,8 @@ export class Robot implements Player {
   private cords: Cords;
   private direction: Direction;
 
-  constructor(x: number, y: number, direction: Direction) {
-    this.cords = { x, y };
+  constructor(cords: Cords, direction: Direction) {
+    this.cords = cords;
     this.direction = direction;
   }
 

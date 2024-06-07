@@ -4,7 +4,7 @@ import { Robot } from './robot';
 let robot: Robot;
 
 beforeEach(() => {
-  robot = new Robot(0, 0, 'NORTH');
+  robot = new Robot({ x: 0, y: 0 }, 'NORTH');
 });
 
 describe('Robot', () => {

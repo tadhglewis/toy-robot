@@ -8,7 +8,30 @@ import { Tabletop } from './tabletop';
 
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
-const game = new Game(new Tabletop({ x: 5, y: 5 }));
+const tableSize = { x: 5, y: 5 };
+
+const game = new Game(new Tabletop(tableSize));
+
+// Inquirer removed number inputs during their migration to reduce package size.
+// https://github.com/SBoudrias/Inquirer.js/issues/1383#issuecomment-2041575124
+const inputNumber = async (...args: Parameters<typeof input>) =>
+  parseInt(
+    await input({
+      ...args[0],
+      validate: (value) => {
+        if (Number.isNaN(value)) {
+          return 'You must provide a valid number';
+        }
+
+        if (args[0].validate) {
+          return args[0].validate(value);
+        }
+
+        return true;
+      },
+    }),
+    10,
+  );
 
 const print = () => {
   const { player, environment } = game.report();
@@ -50,39 +73,46 @@ const print = () => {
 };
 
 const startGameMenu = async () => {
-  const x = await input({
-    message: 'X position',
-    validate: (value) => typeof Number(value) === 'number',
-  });
+  const { cords, direction } = {
+    cords: {
+      x: await inputNumber({
+        message: 'X position',
+        validate: (string) =>
+          (Number(string) >= 0 && Number(string) < tableSize.x) ||
+          `X position must be between 0 and ${tableSize.x - 1}`,
+      }),
 
-  const y = await input({
-    message: 'Y position',
-    validate: (value) => typeof Number(value) === 'number',
-  });
+      y: await inputNumber({
+        message: 'Y position',
+        validate: (string) =>
+          (Number(string) >= 0 && Number(string) < tableSize.y) ||
+          `Y position must be between 0 and ${tableSize.y - 1}`,
+      }),
+    },
+    direction: await select<Direction>({
+      message: 'Direction',
+      choices: [
+        {
+          name: 'North',
+          value: 'NORTH',
+        },
+        {
+          name: 'East',
+          value: 'EAST',
+        },
+        {
+          name: 'South',
+          value: 'SOUTH',
+        },
+        {
+          name: 'West',
+          value: 'WEST',
+        },
+      ],
+    }),
+  };
 
-  const direction = await select<Direction>({
-    message: 'Direction',
-    choices: [
-      {
-        name: 'North',
-        value: 'NORTH',
-      },
-      {
-        name: 'East',
-        value: 'EAST',
-      },
-      {
-        name: 'South',
-        value: 'SOUTH',
-      },
-      {
-        name: 'West',
-        value: 'WEST',
-      },
-    ],
-  });
-
-  game.place(new Robot(Number(x), Number(y), direction));
+  game.place(new Robot(cords, direction));
 };
 
 const actionResolver: Record<Action, () => void | Promise<void>> = {

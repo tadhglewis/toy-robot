@@ -15,7 +15,7 @@ describe('Game', () => {
     ));
 
   it('should ignore player placement if out of bounds', () => {
-    game.place(new Robot(-1, 0, 'NORTH'));
+    game.place(new Robot({ x: -1, y: 0 }, 'NORTH'));
 
     expect(() => game.report()).toThrowErrorMatchingInlineSnapshot(
       `"The player has not been placed"`,
@@ -23,7 +23,7 @@ describe('Game', () => {
   });
 
   it('should place player in a specified position', () => {
-    game.place(new Robot(4, 4, 'SOUTH'));
+    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH'));
 
     expect(game.report().player).toStrictEqual({
       cords: { x: 4, y: 4 },
@@ -32,13 +32,13 @@ describe('Game', () => {
   });
 
   it('should be re-placed if the player has already been placed', () => {
-    game.place(new Robot(0, 0, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
     expect(game.report().player).toStrictEqual({
       cords: { x: 0, y: 0 },
       direction: 'NORTH',
     });
 
-    game.place(new Robot(4, 4, 'SOUTH'));
+    game.place(new Robot({ x: 4, y: 4 }, 'SOUTH'));
     expect(game.report().player).toStrictEqual({
       cords: { x: 4, y: 4 },
       direction: 'SOUTH',
@@ -46,7 +46,7 @@ describe('Game', () => {
   });
 
   it('should not fall off the map', () => {
-    game.place(new Robot(0, 0, 'SOUTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'SOUTH'));
 
     game.move();
 
@@ -57,7 +57,7 @@ describe('Game', () => {
   });
 
   it('should move forward', () => {
-    game.place(new Robot(0, 0, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
     game.move();
 
     expect(game.report().player).toStrictEqual({
@@ -67,14 +67,14 @@ describe('Game', () => {
   });
 
   it('should be facing EAST when turning left from NORTH', () => {
-    game.place(new Robot(0, 0, 'NORTH'));
+    game.place(new Robot({ x: 0, y: 0 }, 'NORTH'));
     game.turnRight();
 
     expect(game.report().player.direction).toBe('EAST');
   });
 
   it('should move around', () => {
-    game.place(new Robot(1, 2, 'EAST'));
+    game.place(new Robot({ x: 1, y: 2 }, 'EAST'));
     game.move();
     game.move();
     game.turnLeft();
