@@ -2,15 +2,16 @@
 
 import { input, select } from '@inquirer/prompts';
 
-import { type Direction, Game } from './game';
-import { Robot } from './robot';
-import { Tabletop } from './tabletop';
+import { Game, Robot, Tabletop } from './game';
+import type { Direction } from './game/game';
 
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
-const tableSize = { x: 5, y: 5 };
+const config = {
+  tableSize: { x: 5, y: 5 },
+};
 
-const game = new Game(new Tabletop(tableSize));
+const game = new Game(new Tabletop(config.tableSize));
 
 // Inquirer removed number inputs during their migration to reduce package size.
 // https://github.com/SBoudrias/Inquirer.js/issues/1383#issuecomment-2041575124
@@ -78,15 +79,15 @@ const startGameMenu = async () => {
       x: await inputNumber({
         message: 'X position',
         validate: (string) =>
-          (Number(string) >= 0 && Number(string) < tableSize.x) ||
-          `X position must be between 0 and ${tableSize.x - 1}`,
+          (Number(string) >= 0 && Number(string) < config.tableSize.x) ||
+          `X position must be between 0 and ${config.tableSize.x - 1}`,
       }),
 
       y: await inputNumber({
         message: 'Y position',
         validate: (string) =>
-          (Number(string) >= 0 && Number(string) < tableSize.y) ||
-          `Y position must be between 0 and ${tableSize.y - 1}`,
+          (Number(string) >= 0 && Number(string) < config.tableSize.y) ||
+          `Y position must be between 0 and ${config.tableSize.y - 1}`,
       }),
     },
     direction: await select<Direction>({
