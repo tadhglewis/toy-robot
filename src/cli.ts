@@ -16,7 +16,7 @@ const print = () => {
   const result: string[] = [];
 
   times(environment.mapSize.y, (y) => {
-    // If the layer is on this row(y), fill each space manually
+    // If the player is on this row(y), fill each space manually
     if (player.cords.y === y) {
       const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
       row[player.cords.x] = '[🤖]';
