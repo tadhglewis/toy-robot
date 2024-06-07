@@ -8,33 +8,20 @@ import type { Direction } from './game/game';
 import { inputNumber } from './inquirer';
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
-const obstacles = new Map([[0, new Set([1])]]);
-
 const print = () => {
   const { player, environment } = game.report();
 
   const emptyRow = '[󠀠⋄⋄]'.repeat(environment.mapSize.x);
 
   const result = range(0, environment.mapSize.y).map((y) => {
-    const rowObstacles = obstacles.get(y);
-    const isPlayerRow = player.cords.y === y;
-
     // Return an empty row if nothing is on the y(row)
-    if (!isPlayerRow && !rowObstacles) {
+    if (player.cords.y !== y) {
       return emptyRow;
     }
 
     const row = new Array(environment.mapSize.x).fill('[󠀠⋄⋄]');
 
-    if (isPlayerRow) {
-      row[player.cords.x] = '[🤖]';
-    }
-
-    if (rowObstacles) {
-      for (const rowObstacle of rowObstacles) {
-        row[rowObstacle] = '[🚧]';
-      }
-    }
+    row[player.cords.x] = '[🤖]';
 
     return row.join('');
   });
