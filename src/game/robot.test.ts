@@ -1,3 +1,5 @@
+import { times } from 'lodash';
+
 import type { Direction } from './game';
 import { Robot } from './robot';
 import { Tabletop } from './tabletop';
@@ -17,9 +19,7 @@ describe('Robot', () => {
       ['EAST', 3],
       ['NORTH', 4],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
-      for (let i = 0; i < turns; i++) {
-        robot.turnLeft();
-      }
+      times(turns, () => robot.turnLeft());
 
       expect(robot.report().direction).toBe(result);
     });
@@ -32,11 +32,32 @@ describe('Robot', () => {
       ['WEST', 3],
       ['NORTH', 4],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
-      for (let i = 0; i < turns; i++) {
-        robot.turnRight();
-      }
+      times(turns, () => robot.turnRight());
 
       expect(robot.report().direction).toBe(result);
+    });
+  });
+
+  describe('move', () => {
+    it('should move by one space in the current direction', () => {
+      robot.move();
+      expect(robot.report()).toStrictEqual({
+        cords: {
+          x: 0,
+          y: 1,
+        },
+        direction: 'NORTH',
+      });
+
+      robot.move();
+      robot.move();
+      expect(robot.report()).toStrictEqual({
+        cords: {
+          x: 0,
+          y: 3,
+        },
+        direction: 'NORTH',
+      });
     });
   });
 });
