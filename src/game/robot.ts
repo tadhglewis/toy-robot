@@ -42,6 +42,14 @@ export class Robot implements Player {
     this.cords = newPosition;
   }
 
+  teleport(newCords: Cords) {
+    if (this.environment.isObstructed(newCords)) {
+      return;
+    }
+
+    this.cords = newCords;
+  }
+
   turnLeft() {
     this.direction = Movement.turnLeft(this.direction);
   }

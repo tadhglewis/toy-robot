@@ -22,9 +22,10 @@ export interface Environment {
 export interface Player {
   move: () => void;
   back: () => void;
+  jump: () => void;
+  teleport: (cords: Cords) => void;
   turnLeft: () => void;
   turnRight: () => void;
-  jump: () => void;
   report: () => { cords: Cords; direction: Direction };
 }
 
@@ -83,11 +84,17 @@ export class Game {
     this.getPlayer().jump();
   }
 
+  teleport(cords: Cords) {
+    this.getPlayer().teleport(cords);
+  }
+
   addObstacle(cords: Cords) {
     const playerCords = this.getPlayer().report().cords;
 
-    if (cords.x !== playerCords.x && cords.y !== playerCords.y) {
-      this.environment.addObstacle(cords);
+    if (cords.x === playerCords.x && cords.y === playerCords.y) {
+      return;
     }
+
+    this.environment.addObstacle(cords);
   }
 }

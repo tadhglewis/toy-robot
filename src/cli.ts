@@ -14,17 +14,27 @@ const actions = {
     description: 'Move the robot forward',
     action: () => game.move(),
   },
+  BACK: {
+    name: 'Back',
+    value: 'BACK',
+    description: 'Move the robot backwards',
+    action: () => game.back(),
+  },
   JUMP: {
     name: 'Jump',
     value: 'JUMP',
     description: 'Jump forward two spaces',
     action: () => game.jump(),
   },
-  BACK: {
-    name: 'Back',
-    value: 'BACK',
-    description: 'Move the robot backwards',
-    action: () => game.back(),
+  TELEPORT: {
+    name: 'Teleport',
+    value: 'TELEPORT',
+    description: 'Teleport to a specified position',
+    action: async () => {
+      const cords = await askForCords();
+
+      game.teleport(cords);
+    },
   },
   TURN_LEFT: {
     name: 'Turn left',
