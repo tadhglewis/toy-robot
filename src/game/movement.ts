@@ -1,22 +1,22 @@
 import { type Cords, type Direction, directions } from './game';
 
 class MovementHandler {
-  move(cords: Cords, direction: Direction, multipler = 1) {
+  move(cords: Cords, direction: Direction) {
     const directionAxisMap: Record<Direction, { x: number; y: number }> = {
       NORTH: {
         x: 0,
-        y: 1 * Number(multipler),
+        y: 1,
       },
       EAST: {
-        x: 1 * Number(multipler),
+        x: 1,
         y: 0,
       },
       SOUTH: {
         x: 0,
-        y: -1 * multipler,
+        y: -1,
       },
       WEST: {
-        x: -1 * multipler,
+        x: -1,
         y: 0,
       },
     };
