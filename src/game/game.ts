@@ -85,13 +85,8 @@ export class Game {
 
   addObstacle(cords: Cords) {
     const playerCords = this.getPlayer().report().cords;
-    const isObstructed = this.environment.isObstructed(cords);
 
-    if (
-      isObstructed &&
-      cords.x !== playerCords.x &&
-      cords.y !== playerCords.y
-    ) {
+    if (cords.x !== playerCords.x && cords.y !== playerCords.y) {
       this.environment.addObstacle(cords);
     }
   }

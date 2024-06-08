@@ -18,6 +18,10 @@ export class Tabletop implements Environment {
   }
 
   addObstacle({ x, y }: Cords) {
+    if (this.isObstructed({ x, y })) {
+      return;
+    }
+
     const rowObstacles = this.obstacles.get(y);
 
     if (rowObstacles) {
