@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import _ from 'lodash';
 
 import type { Direction } from './game';
 import { Movement } from './movement';
@@ -17,7 +17,7 @@ describe('Movement', () => {
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
       let direction: Direction = 'NORTH';
 
-      times(turns, () => (direction = Movement.turnLeft(direction)));
+      _.times(turns, () => (direction = Movement.turnLeft(direction)));
 
       expect(direction).toBe(result);
     });
@@ -36,7 +36,7 @@ describe('Movement', () => {
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
       let direction: Direction = 'NORTH';
 
-      times(turns, () => (direction = Movement.turnRight(direction)));
+      _.times(turns, () => (direction = Movement.turnRight(direction)));
 
       expect(direction).toBe(result);
     });
