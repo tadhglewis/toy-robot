@@ -6,6 +6,7 @@ import { range } from 'lodash';
 import { Player, config, environment, game } from './game';
 import type { Direction } from './game/game';
 import { inputNumber } from './inquirer';
+
 type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
 
 const print = () => {
@@ -13,7 +14,7 @@ const print = () => {
 
   const emptyRow = '[󠀠⋄⋄]'.repeat(gameEnvironment.mapSize.x);
 
-  const result = range(0, gameEnvironment.mapSize.y).map((y) => {
+  const rows = range(0, gameEnvironment.mapSize.y).map((y) => {
     // Return an empty row if nothing is on the y(row)
     if (player.cords.y !== y) {
       return emptyRow;
@@ -26,6 +27,8 @@ const print = () => {
     return row.join('');
   });
 
+  const result = rows.reverse().join('\n');
+
   const visualDirectionMap: Record<Direction, string> = {
     NORTH: '⬆️',
     EAST: '➡️',
@@ -34,7 +37,7 @@ const print = () => {
   };
 
   console.log(
-    result.reverse().join('\n'),
+    result,
     '\n\n',
     `Direction: ${visualDirectionMap[player.direction]}`,
   );
