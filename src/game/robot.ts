@@ -23,15 +23,11 @@ export class Robot implements Player {
   }
 
   turnLeft() {
-    const newDirection = Movement.turnLeft(this.direction);
-
-    this.direction = newDirection;
+    this.direction = Movement.turnLeft(this.direction);
   }
 
   turnRight() {
-    const newDirection = Movement.turnRight(this.direction);
-
-    this.direction = newDirection;
+    this.direction = Movement.turnRight(this.direction);
   }
 
   report() {

@@ -1,6 +1,6 @@
 import { type Cords, type Direction, directions } from './game';
 
-class MovementHandler {
+class MovementSingleton {
   move(cords: Cords, direction: Direction) {
     const directionAxisMap: Record<Direction, { x: number; y: number }> = {
       NORTH: {
@@ -29,13 +29,13 @@ class MovementHandler {
     return newPosition;
   }
 
-  private turn(direction: Direction, turn: number) {
+  private turn(direction: Direction, times: number) {
     const currentDirection = directions.indexOf(direction);
     // Get left direction of current direction
     // or far right if left is out of bounds
     const newDirection =
-      directions[currentDirection + turn] ??
-      directions.at((currentDirection + turn) % directions.length);
+      directions[currentDirection + times] ??
+      directions.at((currentDirection + times) % directions.length);
 
     // There is always a direction available using last item in array
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -51,4 +51,4 @@ class MovementHandler {
   }
 }
 
-export const Movement = new MovementHandler();
+export const Movement = new MovementSingleton();
