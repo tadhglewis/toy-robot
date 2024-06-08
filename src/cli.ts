@@ -7,7 +7,50 @@ import { Player, config, environment, game } from './game';
 import type { Direction } from './game/game';
 import { inputNumber } from './inquirer';
 
-type Action = 'TURN_LEFT' | 'TURN_RIGHT' | 'MOVE';
+const actions = {
+  MOVE: {
+    name: 'Move',
+    value: 'MOVE',
+    description: 'Move the robot forward',
+    action: () => game.move(),
+  },
+  JUMP: {
+    name: 'Jump',
+    value: 'JUMP',
+    description: 'Jump forward two spaces',
+    action: () => game.jump(),
+  },
+  BACK: {
+    name: 'Back',
+    value: 'BACK',
+    description: 'Move the robot backwards',
+    action: () => game.back(),
+  },
+  TURN_LEFT: {
+    name: 'Turn left',
+    value: 'TURN_LEFT',
+    description: 'Turn the robot left',
+    action: () => game.turnLeft(),
+  },
+  TURN_RIGHT: {
+    name: 'Turn right',
+    value: 'TURN_RIGHT',
+    description: 'Turn the robot right',
+    action: () => game.turnRight(),
+  },
+  ADD_OBSTACLE: {
+    name: 'Add obstacle',
+    value: 'ADD_OBSTACLE',
+    description: 'Add an obstacle to the environment',
+    action: async () => {
+      const cords = await askForCords();
+
+      game.addObstacle(cords);
+    },
+  },
+} as const;
+
+type Action = keyof typeof actions;
 
 const print = () => {
   const { player, environment: gameEnvironment } = game.report();
@@ -15,14 +58,25 @@ const print = () => {
   const emptyRow = '[󠀠⋄⋄]'.repeat(gameEnvironment.mapSize.x);
 
   const rows = range(0, gameEnvironment.mapSize.y).map((y) => {
+    const isPlayerRow = player.cords.y === y;
+    const rowObstacles = gameEnvironment.obstacles.get(y);
+
     // Return an empty row if nothing is on the y(row)
-    if (player.cords.y !== y) {
+    if (!isPlayerRow && !rowObstacles) {
       return emptyRow;
     }
 
     const row = new Array(gameEnvironment.mapSize.x).fill('[󠀠⋄⋄]');
 
-    row[player.cords.x] = '[🤖]';
+    if (isPlayerRow) {
+      row[player.cords.x] = '[🤖]';
+    }
+
+    if (rowObstacles) {
+      for (const rowObstacle of rowObstacles) {
+        row[rowObstacle] = '[🚧]';
+      }
+    }
 
     return row.join('');
   });
@@ -31,9 +85,13 @@ const print = () => {
 
   const visualDirectionMap: Record<Direction, string> = {
     NORTH: '⬆️',
+    NORTH_EAST: '↗️',
     EAST: '➡️',
+    SOUTH_EAST: '↘️',
     SOUTH: '⬇️',
+    SOUTH_WEST: '↙️',
     WEST: '⬅️',
+    NORTH_WEST: '↖️',
   };
 
   console.log(
@@ -43,23 +101,25 @@ const print = () => {
   );
 };
 
+const askForCords = async () => ({
+  x: await inputNumber({
+    message: 'X position',
+    validate: (string) =>
+      (Number(string) >= 0 && Number(string) < config.tableSize.x) ||
+      `X position must be between 0 and ${config.tableSize.x - 1}`,
+  }),
+
+  y: await inputNumber({
+    message: 'Y position',
+    validate: (string) =>
+      (Number(string) >= 0 && Number(string) < config.tableSize.y) ||
+      `Y position must be between 0 and ${config.tableSize.y - 1}`,
+  }),
+});
+
 const startGameMenu = async () => {
   const { cords, direction } = {
-    cords: {
-      x: await inputNumber({
-        message: 'X position',
-        validate: (string) =>
-          (Number(string) >= 0 && Number(string) < config.tableSize.x) ||
-          `X position must be between 0 and ${config.tableSize.x - 1}`,
-      }),
-
-      y: await inputNumber({
-        message: 'Y position',
-        validate: (string) =>
-          (Number(string) >= 0 && Number(string) < config.tableSize.y) ||
-          `Y position must be between 0 and ${config.tableSize.y - 1}`,
-      }),
-    },
+    cords: await askForCords(),
     direction: await select<Direction>({
       message: 'Direction',
       choices: [
@@ -86,12 +146,6 @@ const startGameMenu = async () => {
   game.place(new Player(cords, direction, environment));
 };
 
-const actionResolver: Record<Action, () => void | Promise<void>> = {
-  TURN_LEFT: () => game.turnLeft(),
-  TURN_RIGHT: () => game.turnRight(),
-  MOVE: () => game.move(),
-};
-
 const main = async () => {
   await startGameMenu();
 
@@ -99,28 +153,18 @@ const main = async () => {
     console.clear();
     print();
 
-    const action = await select<Action>({
+    const command = await select<Action>({
       message: 'Robot commands',
-      choices: [
-        {
-          name: 'Move',
-          value: 'MOVE',
-          description: 'Move the robot forward',
-        },
-        {
-          name: 'Turn left',
-          value: 'TURN_LEFT',
-          description: 'Turn the robot left',
-        },
-        {
-          name: 'Turn right',
-          value: 'TURN_RIGHT',
-          description: 'Turn the robot right',
-        },
-      ],
+      choices: Object.entries(actions).map(
+        ([_, { name, description, value }]) => ({
+          name,
+          description,
+          value,
+        }),
+      ),
     });
 
-    await actionResolver[action]();
+    await actions[command].action();
   }
 };
 
