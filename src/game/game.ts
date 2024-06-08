@@ -3,8 +3,6 @@ export type Direction = (typeof directions)[number];
 
 export type Cords = { x: number; y: number };
 
-// 1. Move into movements class
-
 export interface Environment {
   isObstructed: (cords: Cords) => boolean;
   mapSize: Cords;

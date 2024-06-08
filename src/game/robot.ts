@@ -1,10 +1,5 @@
-import {
-  type Cords,
-  type Direction,
-  type Environment,
-  type Player,
-  directions,
-} from './game';
+import type { Cords, Direction, Environment, Player } from './game';
+import { Movement } from './movement';
 
 export class Robot implements Player {
   private cords: Cords;
@@ -18,29 +13,7 @@ export class Robot implements Player {
   }
 
   move() {
-    const compassCordsMap: Record<Direction, { x: number; y: number }> = {
-      NORTH: {
-        x: 0,
-        y: 1,
-      },
-      EAST: {
-        x: 1,
-        y: 0,
-      },
-      SOUTH: {
-        x: 0,
-        y: -1,
-      },
-      WEST: {
-        x: -1,
-        y: 0,
-      },
-    };
-
-    const newPosition = {
-      x: this.cords.x + compassCordsMap[this.direction].x,
-      y: this.cords.y + compassCordsMap[this.direction].y,
-    };
+    const newPosition = Movement.move(this.cords, this.direction);
 
     if (this.environment.isObstructed(newPosition)) {
       return;
@@ -49,25 +22,16 @@ export class Robot implements Player {
     this.cords = newPosition;
   }
 
-  private turn(turn: number) {
-    const currentDirection = directions.indexOf(this.direction);
-    // Get left direction of current direction
-    // or far right if left is out of bounds
-    const nextDirection =
-      directions[currentDirection + turn] ??
-      directions.at((currentDirection + turn) % directions.length);
-
-    // There is always a direction available using last item in array
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.direction = nextDirection!;
-  }
-
   turnLeft() {
-    this.turn(-1);
+    const newDirection = Movement.turnLeft(this.direction);
+
+    this.direction = newDirection;
   }
 
   turnRight() {
-    this.turn(+1);
+    const newDirection = Movement.turnRight(this.direction);
+
+    this.direction = newDirection;
   }
 
   report() {
