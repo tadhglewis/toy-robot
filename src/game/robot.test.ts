@@ -1,4 +1,4 @@
-import { times } from 'lodash';
+import _ from 'lodash';
 
 import type { Direction } from './game';
 import { Robot } from './robot';
@@ -19,7 +19,7 @@ describe('Robot', () => {
       ['EAST', 3],
       ['NORTH', 4],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
-      times(turns, () => robot.turnLeft());
+      _.times(turns, () => robot.turnLeft());
 
       expect(robot.report().direction).toBe(result);
     });
@@ -32,7 +32,7 @@ describe('Robot', () => {
       ['WEST', 3],
       ['NORTH', 4],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
-      times(turns, () => robot.turnRight());
+      _.times(turns, () => robot.turnRight());
 
       expect(robot.report().direction).toBe(result);
     });

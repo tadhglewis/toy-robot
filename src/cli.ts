@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { select } from '@inquirer/prompts';
-import { range } from 'lodash';
+import _ from 'lodash';
 
 import { Player, config, environment, game } from './game';
 import type { Direction } from './game/game';
@@ -35,7 +35,7 @@ const print = () => {
 
   const emptyRow = '[󠀠⋄⋄]'.repeat(gameEnvironment.mapSize.x);
 
-  const rows = range(0, gameEnvironment.mapSize.y).map((y) => {
+  const rows = _.range(0, gameEnvironment.mapSize.y).map((y) => {
     // Return an empty row if nothing is on the y(row)
     if (player.cords.y !== y) {
       return emptyRow;
@@ -119,7 +119,7 @@ const main = async () => {
     const command = await select<Action>({
       message: 'Robot commands',
       choices: Object.entries(actions).map(
-        ([_, { name, description, value }]) => ({
+        ([__, { name, description, value }]) => ({
           name,
           description,
           value,
