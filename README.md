@@ -1,6 +1,10 @@
 # toy-robot
 
+Extendable CLI mini-game with an interactive toy robot
+
 [![Powered by skuba](https://img.shields.io/badge/🤿%20skuba-powered-009DC4)](https://github.com/seek-oss/skuba)
+
+![Toy Robot](./demo.png)
 
 ## Challenge
 
