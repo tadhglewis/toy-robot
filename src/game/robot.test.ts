@@ -14,10 +14,14 @@ beforeEach(() => {
 describe('Robot', () => {
   describe('turnLeft', () => {
     it.each<[Direction, number]>([
-      ['WEST', 1],
-      ['SOUTH', 2],
-      ['EAST', 3],
-      ['NORTH', 4],
+      ['NORTH_WEST', 1],
+      ['WEST', 2],
+      ['SOUTH_WEST', 3],
+      ['SOUTH', 4],
+      ['SOUTH_EAST', 5],
+      ['EAST', 6],
+      ['NORTH_EAST', 7],
+      ['NORTH', 8],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
       _.times(turns, () => robot.turnLeft());
 
@@ -27,10 +31,14 @@ describe('Robot', () => {
 
   describe('turnRight', () => {
     it.each<[Direction, number]>([
-      ['EAST', 1],
-      ['SOUTH', 2],
-      ['WEST', 3],
-      ['NORTH', 4],
+      ['NORTH_EAST', 1],
+      ['EAST', 2],
+      ['SOUTH_EAST', 3],
+      ['SOUTH', 4],
+      ['SOUTH_WEST', 5],
+      ['WEST', 6],
+      ['NORTH_WEST', 7],
+      ['NORTH', 8],
     ])('should be facing %s when turning %i time(s)', (result, turns) => {
       _.times(turns, () => robot.turnRight());
 

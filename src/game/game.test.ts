@@ -67,11 +67,11 @@ describe('Game', () => {
     });
   });
 
-  it('should be facing EAST when turning left from NORTH', () => {
+  it('should be facing NORTH_EAST when turning left from NORTH', () => {
     game.place(new Robot({ x: 0, y: 0 }, 'NORTH', tabletop));
     game.turnRight();
 
-    expect(game.report().player.direction).toBe('EAST');
+    expect(game.report().player.direction).toBe('NORTH_EAST');
   });
 
   it('should move around', () => {
@@ -82,8 +82,8 @@ describe('Game', () => {
     game.move();
 
     expect(game.report().player).toStrictEqual({
-      cords: { x: 3, y: 3 },
-      direction: 'NORTH',
+      cords: { x: 4, y: 3 },
+      direction: 'NORTH_EAST',
     });
   });
 });

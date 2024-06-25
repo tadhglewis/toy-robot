@@ -1,23 +1,39 @@
 import { type Cords, type Direction, directions } from './game';
 
 class MovementSingleton {
-  move(cords: Cords, direction: Direction) {
+  move(cords: Cords, direction: Direction, distance = 1) {
     const directionAxisMap: Record<Direction, { x: number; y: number }> = {
       NORTH: {
         x: 0,
-        y: 1,
+        y: distance,
+      },
+      NORTH_EAST: {
+        x: distance,
+        y: distance,
       },
       EAST: {
-        x: 1,
+        x: distance,
         y: 0,
+      },
+      SOUTH_EAST: {
+        x: distance,
+        y: -distance,
       },
       SOUTH: {
         x: 0,
-        y: -1,
+        y: -distance,
+      },
+      SOUTH_WEST: {
+        x: -distance,
+        y: -distance,
       },
       WEST: {
-        x: -1,
+        x: -distance,
         y: 0,
+      },
+      NORTH_WEST: {
+        x: -distance,
+        y: distance,
       },
     };
 

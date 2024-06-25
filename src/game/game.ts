@@ -1,15 +1,29 @@
-export const directions = ['NORTH', 'EAST', 'SOUTH', 'WEST'] as const;
+export const directions = [
+  'NORTH',
+  'NORTH_EAST',
+  'EAST',
+  'SOUTH_EAST',
+  'SOUTH',
+  'SOUTH_WEST',
+  'WEST',
+  'NORTH_WEST',
+] as const;
 export type Direction = (typeof directions)[number];
 
 export type Cords = { x: number; y: number };
 
 export interface Environment {
   isObstructed: (cords: Cords) => boolean;
+  addObstacle: (cords: Cords) => void;
   mapSize: Cords;
+  obstacles: Map<number, Set<number>>;
 }
 
 export interface Player {
   move: () => void;
+  back: () => void;
+  jump: () => void;
+  teleport: (cords: Cords) => void;
   turnLeft: () => void;
   turnRight: () => void;
   report: () => { cords: Cords; direction: Direction };
@@ -37,6 +51,7 @@ export class Game {
       player: this.getPlayer().report(),
       environment: {
         mapSize: this.environment.mapSize,
+        obstacles: this.environment.obstacles,
       },
     };
   }
@@ -59,5 +74,27 @@ export class Game {
 
   move() {
     this.getPlayer().move();
+  }
+
+  back() {
+    this.getPlayer().back();
+  }
+
+  jump() {
+    this.getPlayer().jump();
+  }
+
+  teleport(cords: Cords) {
+    this.getPlayer().teleport(cords);
+  }
+
+  addObstacle(cords: Cords) {
+    const playerCords = this.getPlayer().report().cords;
+
+    if (cords.x === playerCords.x && cords.y === playerCords.y) {
+      return;
+    }
+
+    this.environment.addObstacle(cords);
   }
 }

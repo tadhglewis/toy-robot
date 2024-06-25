@@ -2,9 +2,11 @@ import type { Cords, Environment } from './game';
 
 export class Tabletop implements Environment {
   mapSize: Cords;
+  obstacles: Map<number, Set<number>>;
 
   constructor(cords: Cords) {
     this.mapSize = cords;
+    this.obstacles = new Map();
   }
 
   private isWithinMap(x: number, y: number) {
@@ -12,6 +14,20 @@ export class Tabletop implements Environment {
   }
 
   isObstructed({ x, y }: Cords) {
-    return !this.isWithinMap(x, y);
+    return Boolean(!this.isWithinMap(x, y) || this.obstacles.get(y)?.has(x));
+  }
+
+  addObstacle({ x, y }: Cords) {
+    if (this.isObstructed({ x, y })) {
+      return;
+    }
+
+    const rowObstacles = this.obstacles.get(y);
+
+    if (rowObstacles) {
+      rowObstacles.add(x);
+    } else {
+      this.obstacles.set(y, new Set([x]));
+    }
   }
 }
