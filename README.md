@@ -10,7 +10,7 @@ Extendable CLI mini-game with an interactive toy robot
 
 [See coding challenge](./coding-challenge.md) for details.
 
-Extensions to challenge
+Extensions to challenge:
 
 1. Diagonal movement
 2. Jumping
