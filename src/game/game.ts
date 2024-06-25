@@ -58,7 +58,7 @@ export class Game {
 
   private getPlayer() {
     if (!this.player) {
-      throw new Error('The robot has not been placed');
+      throw new Error('The player has not been placed');
     }
 
     return this.player;
