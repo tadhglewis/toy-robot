@@ -15,7 +15,7 @@
     "@inquirer/prompts": "^5.0.5",
     "chalk": "^5.3.0",
     "dayjs": "^1.11.11",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "skuba-dive": "^2.0.0"
   },
   "devDependencies": {
